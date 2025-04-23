@@ -1,15 +1,15 @@
 'use client';
 
 import Image from "next/image";
-
+import React, { useEffect } from "react";
 import { useAuth } from './context/AuthContext';
-import Login from './login/Login';
+import StartingPage from "@/components/StartingPage";
 
 export default function Home() {
   const { user, logOut } = useAuth();
 
   if (!user) {
-    return <Login />;
+    return <StartingPage />;
   }
 
   return (
