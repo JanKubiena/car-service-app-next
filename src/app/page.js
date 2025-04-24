@@ -50,6 +50,17 @@ export default function Home() {
             ></iframe>
           </div>
         </div>
+        <div className="relative mt-8 w-full max-w-4xl text-center">
+          <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
+            <p className="text-lg mb-4">Need assistance? Call us now!</p>
+              <a
+                 href="tel:+48881 488 990" 
+                className="text-blue-500 text-lg font-bold hover:underline"
+              >
+    Call us:
+    +48 881 488 990
+  </a>
+</div>
       <BottomNavBar />
       </div>
   );
