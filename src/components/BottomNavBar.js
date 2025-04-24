@@ -14,7 +14,7 @@ export default function BottomNavBar() {
       </Link>
       <Link href="/" className="flex flex-col items-center">
           <Image src="/icons/visits.png" alt="Vis" width={24} height={24} />
-          <span className="text-xs">Visits</span>
+          <span className="text-xs">History</span>
       </Link>
       <Link href="/profile" className="flex flex-col items-center">
           <Image src="/icons/user.png" alt="Acc" width={24} height={24} />
