@@ -38,6 +38,12 @@ export default function Login() {
           Login with Email
         </button>
       </div>
+      <p className="mt-4">
+        You dont have account yet?{' '}
+        <a href="/register" className="text-blue-500 underline">
+          Sign up here
+        </a>
+      </p>
     </div>
   );      
 }
