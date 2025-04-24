@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 export default function Register() {
-  const { signUp } = useAuth();
+  const { signUpWithEmail } = useAuth();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -29,7 +29,7 @@ export default function Register() {
     setError('');
 
     try {
-      await signUp(formData.email, formData.password, formData.name, formData.surname);
+      await signUpWithEmail(formData.email, formData.password, formData.name, formData.surname);
       router.push('/'); // Redirect to home page after successful registration
     } catch (err) {
       setError('Registration failed. Please try again.');

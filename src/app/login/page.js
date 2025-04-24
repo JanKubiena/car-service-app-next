@@ -4,12 +4,12 @@ import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 export default function Login() {
-  const { signIn} = useAuth();
+  const { signInWithGoogle } = useAuth();
   const router = useRouter();
 
-  const handleLogin = async () => {
+  const handleLoginWithGoogle = async () => {
     try {
-      await signIn();
+      await signInWithGoogle();
       router.push('/'); 
     } catch (error) {
       console.error('Login failed:', error);
@@ -26,7 +26,7 @@ export default function Login() {
       <p className="mb-4 text-center">Please sign in to continue.</p>
       <div className="flex flex-col gap-4 w-full max-w-xs">
         <button
-          onClick={handleLogin}
+          onClick={handleLoginWithGoogle}
           className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 text-center"
         >
           Login with Google
