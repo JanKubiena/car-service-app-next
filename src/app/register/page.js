@@ -10,8 +10,6 @@ export default function Register() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    name: '',
-    surname: '',
   });
 
   const [error, setError] = useState('');
@@ -29,7 +27,7 @@ export default function Register() {
     setError('');
 
     try {
-      await signUpWithEmail(formData.email, formData.password, formData.name, formData.surname);
+      await signUpWithEmail(formData.email, formData.password);
       router.push('/'); // Redirect to home page after successful registration
     } catch (err) {
       setError('Registration failed. Please try again.');

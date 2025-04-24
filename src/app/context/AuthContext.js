@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword  } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, updateEmail, EmailAuthProvider, reauthenticateWithCredential  } from 'firebase/auth';
 import { auth } from '../firebase';
 
 const AuthContext = createContext();
@@ -33,8 +33,25 @@ export function AuthProvider({ children }) {
     return signOut(auth);
   };
 
+  const getUserProfile = () => {
+    return user ? { name: user.displayName, email: user.email, photoURL: user.photoURL } : "brak użytkownika";
+  };
+
+  const updateUserProfile = async (name, email, photoURL) => {
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+        photoURL: photoURL || '/profile_pic.png',
+      });
+  
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      throw error; // Re-throw the error to handle it in the calling component
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signInWithGoogle, signUpWithEmail, signInWithEmail, logOut }}>
+    <AuthContext.Provider value={{ user, signInWithGoogle, signUpWithEmail, signInWithEmail, logOut, getUserProfile, updateUserProfile }}>
       {children}
     </AuthContext.Provider>
   );
