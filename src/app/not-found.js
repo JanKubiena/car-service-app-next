@@ -1,28 +1,15 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+'use client'; // <-- required to use hooks like useRouter or usePathname
 
-const NotFound = () => {
+import React from 'react';
+import { useRouter } from 'next/navigation'; // ✅ App Router compatible
+
+export default function NotFound() {
   const router = useRouter();
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>404 - Page Not Found</h1>
-      <p>The page you are looking for does not exist.</p>
-      <button
-        onClick={() => router.push('/')}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#0070f3',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
-        Go Back Home
-      </button>
+    <div>
+      <h1>Page Not Found</h1>
+      <button onClick={() => router.push('/')}>Go Home</button>
     </div>
   );
-};
-
-export default NotFound;
+}
