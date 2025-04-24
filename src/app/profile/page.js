@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import BottomNavBar from '@/components/BottomNavBar';
 
 export default function Profile() {
   const [user, setUser] = useState({
     name: 'John',
     surname: 'Doe',
     email: 'john.doe@example.com',
-    profilePic: 'https://static.thenounproject.com/png/4530368-200.png',
+    profilePic: '/profile_pic.png',
   });
 
   const router = useRouter();
@@ -28,11 +30,13 @@ export default function Profile() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-100">
       {/* Profil użytkownika */}
       <div className="relative w-32 h-32 mb-6">
-        <img
-          src={user.profilePic}
-          alt="Profile"
-          className="w-full h-full object-cover rounded-full border-2 border-gray-300"
-        />
+        <Image
+            src={user.profilePic}
+            alt="Profile"
+            width={128}
+            height={128}
+            className="w-full h-full object-cover rounded-full border-2 border-gray-300"
+          />
       </div>
 
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-sm text-center">
@@ -44,6 +48,7 @@ export default function Profile() {
         >
           Edit Profile
         </button>
+        <BottomNavBar />
       </div>
     </div>
   );

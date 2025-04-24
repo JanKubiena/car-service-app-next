@@ -2,13 +2,15 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import BottomNavBar from '@/components/BottomNavBar';
 
 export default function EditProfile() {
   const [formData, setFormData] = useState({
     name: 'John',
     surname: 'Doe',
     email: 'john.doe@example.com',
-    profilePic: 'https://static.thenounproject.com/png/4530368-200.png',
+    profilePic: '/profile_pic.png',
   });
 
   const router = useRouter();
@@ -31,11 +33,13 @@ export default function EditProfile() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-100">
       {/* Obrazek profilowy */}
       <div className="relative w-32 h-32 mb-6 group">
-        <img
-          src={formData.profilePic}
-          alt="Profile"
-          className="w-full h-full object-cover rounded-full border-2 border-gray-300"
-        />
+        <Image
+            src={formData.profilePic}
+            alt="Profile"
+            width={128}
+            height={128}
+            className="w-full h-full object-cover rounded-full border-2 border-gray-300"
+          />
         <button
           className="absolute inset-0 bg-black bg-opacity-50 text-white flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
         >
@@ -79,6 +83,7 @@ export default function EditProfile() {
           </button>
         </form>
       </div>
+      <BottomNavBar />
     </div>
   );
 }
