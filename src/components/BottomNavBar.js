@@ -8,7 +8,7 @@ export default function BottomNavBar() {
           <Image src="/icons/home.png" alt="Home" width={24} height={24} />
           <span className="text-xs">Home</span>
       </Link>
-      <Link href="/" className="flex flex-col items-center">
+      <Link href="/orders" className="flex flex-col items-center">
           <Image src="/icons/order.png" alt="Ord" width={24} height={24} />
           <span className="text-xs">Orders</span>
       </Link>
