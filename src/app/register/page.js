@@ -41,24 +41,6 @@ export default function Register() {
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
         <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="surname"
-          placeholder="Surname"
-          value={formData.surname}
-          onChange={handleChange}
-          className="border p-2 rounded"
-          required
-        />
-        <input
           type="email"
           name="email"
           placeholder="Email"

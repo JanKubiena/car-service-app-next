@@ -12,7 +12,6 @@ export default function EditProfile() {
   const user = getUserProfile(); // Pobierz dane użytkownika z kontekstu
   const [formData, setFormData] = useState({
     name: user?.name || 'Set up your profile',
-    email: user?.email || '',
     photoURL: user?.photoURL || '/profile_pic.png',
   });
 
@@ -31,7 +30,9 @@ export default function EditProfile() {
     if (file) {
       try {
         const storage = getStorage();
-        const storageRef = ref(storage, `profile_pictures/${file.name}`);
+        const timestamp = new Date().toISOString().replace(/[-:.]/g, ''); // Generate a unique timestamp
+        const uniqueFileName = `profile_pictures/${timestamp}_${file.name}`; // Append timestamp to the file name
+        const storageRef = ref(storage, uniqueFileName);
         
         // Upload the file to Firebase Storage
         await uploadBytes(storageRef, file);
@@ -53,9 +54,9 @@ export default function EditProfile() {
   };
 
   const handleSave = async () => {
-    const { name, email, photoURL } = formData;
+    const { name, photoURL } = formData;
     try {
-      await updateUserProfile(name, email, photoURL); // Save the download URL
+      await updateUserProfile(name, photoURL); // Save the download URL
       console.log(getUserProfile())
   
       router.push('/profile');

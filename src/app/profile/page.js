@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BottomNavBar from '@/components/BottomNavBar';
@@ -10,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Profile() {
   const { getUserProfile, logOut } = useAuth();
   const user = getUserProfile(); // Pobierz dane użytkownika z kontekstu
-
+  console.log(user)
   const router = useRouter();
 
   const handleEditRedirect = () => {
@@ -27,7 +26,7 @@ export default function Profile() {
       {/* Profil użytkownika */}
       <div className="relative w-32 h-32 mb-6">
         <Image
-            src={user?.photoURL ? user.photoURL : '/profile_pic.png'}
+            src={user.photoURL ? user.photoURL : '/profile_pic.png'}
             alt="Profile"
             width={128}
             height={128}
@@ -36,7 +35,7 @@ export default function Profile() {
       </div>
 
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-sm text-center">
-        <h1 className="text-xl font-bold mb-2">{user.name}</h1>
+        <h1 className="text-xl font-bold mb-2">{user.name ? user.name : "Set up your profile"}</h1>
         <p className="text-gray-600">{user.email}</p>
         <button
           onClick={handleEditRedirect}
