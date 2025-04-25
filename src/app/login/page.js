@@ -2,6 +2,8 @@
 
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { db } from "@/app/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function Login() {
   const { signInWithGoogle } = useAuth();
@@ -9,8 +11,30 @@ export default function Login() {
 
   const handleLoginWithGoogle = async () => {
     try {
-      await signInWithGoogle();
-      router.push('/'); 
+      const userCredential = await signInWithGoogle();
+      const user = userCredential.user;
+  
+      // Reference to the user's document in the "uzytkownicy" collection
+      const userDocRef = doc(db, "uzytkownicy", user.uid);
+  
+      // Check if the user document already exists
+      const userDoc = await getDoc(userDocRef);
+  
+      if (!userDoc.exists()) {
+        // If the user doesn't exist, create a new document
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          name: user.displayName || '',
+          surname: '', // Default value if not provided
+          email: user.email || '',
+          photoURL: user.photoURL || '/profile_pic.png',
+          wizyty: [],
+          terminy_wizyt: [],
+          zamowione_czesci: [],
+        });
+      }
+  
+      router.push('/'); // Redirect to the home page
     } catch (error) {
       console.error('Login failed:', error);
     }
