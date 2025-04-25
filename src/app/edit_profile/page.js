@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BottomNavBar from '@/components/BottomNavBar';
 import { useAuth } from '../context/AuthContext';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function EditProfile() {
   const { getUserProfile, updateUserProfile } = useAuth();
@@ -25,13 +26,39 @@ export default function EditProfile() {
     }));
   };
 
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        const storage = getStorage();
+        const storageRef = ref(storage, `profile_pictures/${file.name}`);
+        
+        // Upload the file to Firebase Storage
+        await uploadBytes(storageRef, file);
+  
+        // Get the download URL
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log(downloadURL)
+  
+        // Update the formData with the download URL
+        setFormData((prev) => ({
+          ...prev,
+          photoURL: downloadURL,
+        }));
+      } catch (error) {
+        console.error('Error uploading photo:', error);
+        alert('Failed to upload photo. Please try again.');
+      }
+    }
+  };
+
   const handleSave = async () => {
     const { name, email, photoURL } = formData;
     try {
-      await updateUserProfile(name, email, photoURL);
+      await updateUserProfile(name, email, photoURL); // Save the download URL
+      console.log(getUserProfile())
   
       router.push('/profile');
-
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile. Please try again.');
@@ -49,11 +76,19 @@ export default function EditProfile() {
           height={128}
           className="w-full h-full object-cover rounded-full border-2 border-gray-300"
         />
-        <button
-          className="absolute inset-0 bg-black bg-opacity-50 text-white flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+        <label
+          htmlFor="photoInput"
+          className="absolute inset-0 bg-black bg-opacity-50 text-white flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
         >
           Change Photo
-        </button>
+        </label>
+        <input
+          id="photoInput"
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoChange}
+          className="hidden"
+        />
       </div>
       {/* Formularz edycji */}
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-sm">
