@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation"; // Use useParams and useRouter for navigation
-import { doc, getDoc } from "firebase/firestore";
+import { useParams, useRouter } from "next/navigation";
+import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/firebase";
+import { getAuth } from "firebase/auth"; // Import Firebase Auth
 import BottomNavBar from "@/components/BottomNavBar";
 
 export default function CarPartDetails() {
@@ -13,7 +14,7 @@ export default function CarPartDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return; // Wait for the `id` to be available
+    if (!id) return;
 
     const fetchCarPart = async () => {
       try {
@@ -35,6 +36,22 @@ export default function CarPartDetails() {
     fetchCarPart();
   }, [id]);
 
+  const handleOrder = async () => {
+    const auth = getAuth(); // Get the current user
+    const user = auth.currentUser;
+
+    try {
+      const itemRef = doc(db, "czesci-samochodowe", id);
+      await updateDoc(itemRef, {
+        ownerUids: arrayUnion(user.uid), // Add the user's UID to the ownerUids array
+      });
+      alert("Order placed successfully!");
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order. Please try again.");
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
@@ -47,7 +64,7 @@ export default function CarPartDetails() {
     <div className="flex flex-col justify-center items-center min-h-screen px-4 bg-gray-100 relative">
       {/* Back Button */}
       <button
-        onClick={() => router.back()} // Navigate to the previous page
+        onClick={() => router.back()}
         className="absolute top-4 left-4 bg-black text-white px-4 py-2 rounded-lg shadow-md hover:bg-black-900 transition-all"
       >
         Back
@@ -66,6 +83,15 @@ export default function CarPartDetails() {
           <span className="font-semibold">Description:</span> {carPart.opis || "No description available."}
         </p>
       </div>
+
+      {/* Order Button */}
+      <button
+        onClick={handleOrder} // Call the handleOrder function
+        className="bg-blue-500 text-white w-full sm:w-3/5 lg:w-2/5 mt-4 py-3 rounded-lg shadow-md hover:bg-blue-600 transition-all"
+      >
+        Order
+      </button>
+
       <BottomNavBar />
     </div>
   );
