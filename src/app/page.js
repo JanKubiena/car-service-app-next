@@ -7,7 +7,7 @@ import BottomNavBar from "@/components/BottomNavBar";
 
 
 export default function Home() {
-  const { user, logOut } = useAuth();
+  const { user } = useAuth();
 
   if (!user) {
     return <StartingPage />;
@@ -33,35 +33,30 @@ export default function Home() {
       <p className="text-lg mb-4">
       Join thousands of satisfied users who trust us to keep their cars in top condition.
       </p>
-        <div className="relative mt-16 w-full max-w-4xl text-center">
-          <h2 className="text-2xl font-bold mb-4">Here you can find us</h2>
-          <div className="w-full h-64 rounded-lg shadow-lg">
-            <iframe
+      <div className="relative mt-16 w-full max-w-4xl text-center">
+        <h2 className="text-2xl font-bold mb-4">Here you can find us</h2>
+        <div className="w-full h-64 rounded-lg shadow-lg">
+          <iframe
               src="https://www.openstreetmap.org/export/embed.html?bbox=19.975434%2C50.210916%2C19.981434%2C50.214916&layer=mapnik&marker=50.212916%2C19.978434"
               className="w-full h-full border-0"
               allowFullScreen=""
               loading="lazy"
               title="Car Service Location"
-            ></iframe>
-          </div>
+          ></iframe>
         </div>
-        <div className="relative mt-8 w-full max-w-4xl text-center">
-          <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-            <p className="text-lg mb-4">Need assistance? Call us now!</p>
-              <a
-                 href="tel:+48881 488 990" 
-                className="text-blue-500 text-lg font-bold hover:underline"
-              >
-    Call us:
-    +48 881 488 990
-  </a>
-</div>
-<button
-          onClick={logOut}
-          className="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600">
-          Sign out
-        </button>
-      <BottomNavBar />
       </div>
+      <div className="relative mt-8 w-full max-w-4xl text-center">
+        <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
+          <p className="text-lg mb-4">Need assistance? Call us now!</p>
+          <a
+            href="tel:+48881 488 990" 
+            className="text-blue-500 text-lg font-bold hover:underline"
+          >
+            Call us:
+            +48 881 488 990
+          </a>
+      </div>
+      <BottomNavBar />
+    </div>
   );
 }

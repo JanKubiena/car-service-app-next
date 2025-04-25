@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
     return user ? { name: user.displayName, email: user.email, photoURL: user.photoURL } : "brak użytkownika";
   };
 
-  const updateUserProfile = async (name, email, photoURL) => {
+  const updateUserProfile = async (name, photoURL) => {
     try {
       await updateProfile(auth.currentUser, {
         displayName: name,
