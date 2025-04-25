@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { query, where, collection, getDocs, doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/firebase";
 import { getAuth } from "firebase/auth"; // Import Firebase Auth
 import BottomNavBar from "@/components/BottomNavBar";
@@ -39,12 +39,32 @@ export default function CarPartDetails() {
   const handleOrder = async () => {
     const auth = getAuth(); // Get the current user
     const user = auth.currentUser;
-
+  
+    if (!user) {
+      alert("You must be logged in to place an order.");
+      return;
+    }
+  
     try {
-      const itemRef = doc(db, "czesci-samochodowe", id);
-      await updateDoc(itemRef, {
-        ownerUids: arrayUnion(user.uid), // Add the user's UID to the ownerUids array
+      // Query the uzytkownicy collection to find the document with the matching uid field
+      const usersRef = collection(db, "uzytkownicy");
+      const q = query(usersRef, where("uid", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+  
+      if (querySnapshot.empty) {
+        alert("User not found in the database.");
+        return;
+      }
+  
+      // Assuming there is only one document with the matching uid
+      const userDoc = querySnapshot.docs[0];
+      const userRef = doc(db, "uzytkownicy", userDoc.id);
+  
+      // Update the zamowione_czesci array in the user's document
+      await updateDoc(userRef, {
+        zamowione_czesci: arrayUnion(id), // Add the car part ID to the zamowione_czesci array
       });
+  
       alert("Order placed successfully!");
     } catch (error) {
       console.error("Error placing order:", error);

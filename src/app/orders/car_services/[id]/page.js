@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation"; // Use useParams and useRouter for navigation
-import { doc, getDoc } from "firebase/firestore";
+import { useParams, useRouter } from "next/navigation";
+import { query, where, collection, getDocs, doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/firebase";
+import { getAuth } from "firebase/auth"; // Import Firebase Auth
 import BottomNavBar from "@/components/BottomNavBar";
 
 export default function CarServiceDetails() {
@@ -35,6 +36,42 @@ export default function CarServiceDetails() {
     fetchCarService();
   }, [id]);
 
+  const handleOrder = async () => {
+      const auth = getAuth(); // Get the current user
+      const user = auth.currentUser;
+    
+      if (!user) {
+        alert("You must be logged in to place an order.");
+        return;
+      }
+    
+      try {
+        // Query the uzytkownicy collection to find the document with the matching uid field
+        const usersRef = collection(db, "uzytkownicy");
+        const q = query(usersRef, where("uid", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+    
+        if (querySnapshot.empty) {
+          alert("User not found in the database.");
+          return;
+        }
+    
+        // Assuming there is only one document with the matching uid
+        const userDoc = querySnapshot.docs[0];
+        const userRef = doc(db, "uzytkownicy", userDoc.id);
+    
+        // Update the zamowione_czesci array in the user's document
+        await updateDoc(userRef, {
+          wizyty: arrayUnion(id), // Add the car part ID to the zamowione_czesci array
+        });
+    
+        alert("Order placed successfully!");
+      } catch (error) {
+        console.error("Error placing order:", error);
+        alert("Failed to place order. Please try again.");
+      }
+    };
+
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
@@ -63,6 +100,13 @@ export default function CarServiceDetails() {
           <span className="font-semibold">Description:</span> {carService.opis || "No description available."}
         </p>
       </div>
+      {/* Order Button */}
+      <button
+        onClick={handleOrder} // Call the handleOrder function
+        className="bg-blue-500 text-white w-full sm:w-3/5 lg:w-2/5 mt-4 py-3 rounded-lg shadow-md hover:bg-blue-600 transition-all"
+      >
+        Order
+      </button>
       <BottomNavBar />
     </div>
   );
