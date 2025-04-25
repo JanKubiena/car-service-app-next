@@ -47,7 +47,12 @@ export default function OrderHistory() {
   }
 
   if (orders.length === 0) {
-    return <div className="flex justify-center items-center h-screen">No orders found</div>;
+    return (
+    <div className="flex justify-center items-center h-screen">
+        <h1 className="text-2xl font-bold mb-4 mt-4">No previous orders found</h1>       
+        <BottomNavBar />
+    </div>
+    );
   }
 
   return (
