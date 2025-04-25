@@ -6,8 +6,9 @@ import Image from 'next/image';
 import BottomNavBar from '@/components/BottomNavBar';
 import { useAuth } from '../context/AuthContext';
 
+
 export default function Profile() {
-  const { getUserProfile } = useAuth();
+  const { getUserProfile, logOut } = useAuth();
   const user = getUserProfile(); // Pobierz dane użytkownika z kontekstu
 
   const router = useRouter();
@@ -38,8 +39,14 @@ export default function Profile() {
         >
           Edit Profile
         </button>
-        <BottomNavBar />
       </div>
+      <button
+          onClick={logOut}
+          className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Sign out
+        </button>
+      <BottomNavBar />
     </div>
   );
 }
