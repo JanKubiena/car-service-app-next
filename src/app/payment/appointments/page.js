@@ -1,59 +1,70 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getAuth } from "firebase/auth";
 import { collection, query, where, getDocs, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/firebase";
-import BottomNavBar from "@/components/BottomNavBar"; 
+import BottomNavBar from "@/components/BottomNavBar";
 
 const PaymentPage = () => {
-  const router = useRouter(); 
+  const router = useRouter();
   const searchParams = useSearchParams(); // Get query parameters
-  const id = searchParams.get("id"); // Extract the id from the query parameters
+  const [id, setId] = useState(null); // State to store the id
   const [paymentMethod, setPaymentMethod] = useState("");
   const [creditCardNumber, setCreditCardNumber] = useState("");
   const [creditCardExpiry, setCreditCardExpiry] = useState("");
   const [creditCardCVV, setCreditCardCVV] = useState("");
-  const [appointmentDate, setAppointmentDate] = useState(""); 
-  const [appointmentTime, setAppointmentTime] = useState(""); 
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentTime, setAppointmentTime] = useState("");
+
+  useEffect(() => {
+    // Ensure this runs only on the client side
+    const queryId = searchParams.get("id");
+    setId(queryId);
+  }, [searchParams]);
 
   const handleOrder = async () => {
-    const auth = getAuth(); 
+    const auth = getAuth();
     const user = auth.currentUser;
-  
+
     if (!user) {
-      alert("You must be logged in to place set appoitment.");
+      alert("You must be logged in to set an appointment.");
       return;
     }
-  
+
     try {
       // Query the uzytkownicy collection to find the document with the matching uid field
       const usersRef = collection(db, "uzytkownicy");
       const q = query(usersRef, where("uid", "==", user.uid));
       const querySnapshot = await getDocs(q);
-  
+
       if (querySnapshot.empty) {
         alert("User not found in the database.");
         return;
       }
-  
+
       // Assuming there is only one document with the matching uid
       const userDoc = querySnapshot.docs[0];
       const userRef = doc(db, "uzytkownicy", userDoc.id);
-  
-      // Update the zamowione_czesci array in the user's document
+
+      // Update the wizyty array in the user's document
       await updateDoc(userRef, {
-        wizyty: arrayUnion(id), // Add the car part ID to the zamowione_czesci array
+        wizyty: arrayUnion(id), // Add the appointment ID to the wizyty array
       });
-  
-      alert("Appoitment set successfully! Appointments details have been sent to your email address.");
-      router.push("/history"); // Redirect to the orders page after placing the order
+
+      alert("Appointment set successfully! Appointment details have been sent to your email address.");
+      router.push("/history"); // Redirect to the history page after placing the order
     } catch (error) {
-      console.error("Error setting appoitment:", error);
-      alert("Failed to set appoitment. Please try again.");
+      console.error("Error setting appointment:", error);
+      alert("Failed to set appointment. Please try again.");
     }
   };
+
+  if (!id) {
+    // Render nothing or a loading state until the id is available
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="p-4 max-w-md mx-auto bg-white shadow-md rounded-md">
@@ -78,7 +89,7 @@ const PaymentPage = () => {
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
         </div>
-  
+
         <div>
           <label htmlFor="appointment-time" className="block text-sm font-medium text-gray-700">
             Choose Appointment Time:
@@ -118,7 +129,7 @@ const PaymentPage = () => {
             <option value="18:00">18:00</option>
           </select>
         </div>
-  
+
         <div>
           <label htmlFor="payment-method" className="block text-sm font-medium text-gray-700">
             Choose Payment Method:
@@ -135,7 +146,7 @@ const PaymentPage = () => {
             <option value="cash-on-place">Cash on Place</option>
           </select>
         </div>
-  
+
         {paymentMethod === "credit-card" && (
           <div className="space-y-4">
             <div>
