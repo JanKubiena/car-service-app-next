@@ -1,16 +1,17 @@
-'use client'
+'use client';
+
 import React from 'react';
 import { GoogleMap, LoadScript, Marker, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
 import { fetchGoogleMapsApiKey } from "../app/firebase";
 
 const containerStyle = {
   width: '100%',
-  height: '400px'
+  height: '400px',
 };
 
 const destination = {
   lat: 50.212916,
-  lng: 19.978434
+  lng: 19.978434,
 };
 
 const GoogleMapRouteComponent = () => {
@@ -20,12 +21,14 @@ const GoogleMapRouteComponent = () => {
   const [apiKey, setApiKey] = React.useState(null);
 
   React.useEffect(() => {
+    // Fetch the API key from Firestore
     const getApiKey = async () => {
       const key = await fetchGoogleMapsApiKey();
       setApiKey(key);
     };
     getApiKey();
 
+    // Get the user's location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -63,7 +66,7 @@ const GoogleMapRouteComponent = () => {
     <LoadScript googleMapsApiKey={apiKey}>
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={userLocation || origin}
+        center={userLocation || destination}
         zoom={10}
       >
         {userLocation && <Marker position={userLocation} />}
