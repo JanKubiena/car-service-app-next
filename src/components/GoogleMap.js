@@ -18,16 +18,10 @@ const GoogleMapRouteComponent = () => {
   const [directions, setDirections] = React.useState(null);
   const [travelTime, setTravelTime] = React.useState(null);
   const [userLocation, setUserLocation] = React.useState(null);
-  const [apiKey, setApiKey] = React.useState(null);
+
+  const apiKey = fetchGoogleMapsApiKey();
 
   React.useEffect(() => {
-    // Fetch the API key from Firestore
-    const getApiKey = async () => {
-      const key = await fetchGoogleMapsApiKey();
-      setApiKey(key);
-    };
-    getApiKey();
-
     // Get the user's location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(

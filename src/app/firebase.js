@@ -10,6 +10,8 @@ const firebaseConfig = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+
 };
 
 // Initialize only once
@@ -22,14 +24,6 @@ export const db = typeof window !== "undefined" ? getFirestore(app) : null;
 
 export const auth = typeof window !== "undefined" ? getAuth(app) : null;
 
-export async function fetchGoogleMapsApiKey() {
-  const docRef = doc(db, "config", "apiKeys");
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return docSnap.data().googleMapsApiKey;
-  } else {
-    console.error("No such document in Firestore!");
-    return null;
-  }
+export function fetchGoogleMapsApiKey() {
+  return firebaseConfig.googleMapsApiKey || null;
 }
