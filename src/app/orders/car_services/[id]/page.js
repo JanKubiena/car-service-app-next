@@ -36,42 +36,6 @@ export default function CarServiceDetails() {
     fetchCarService();
   }, [id]);
 
-  const handleOrder = async () => {
-      const auth = getAuth(); // Get the current user
-      const user = auth.currentUser;
-    
-      if (!user) {
-        alert("You must be logged in to place an order.");
-        return;
-      }
-    
-      try {
-        // Query the uzytkownicy collection to find the document with the matching uid field
-        const usersRef = collection(db, "uzytkownicy");
-        const q = query(usersRef, where("uid", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-    
-        if (querySnapshot.empty) {
-          alert("User not found in the database.");
-          return;
-        }
-    
-        // Assuming there is only one document with the matching uid
-        const userDoc = querySnapshot.docs[0];
-        const userRef = doc(db, "uzytkownicy", userDoc.id);
-    
-        // Update the zamowione_czesci array in the user's document
-        await updateDoc(userRef, {
-          wizyty: arrayUnion(id), // Add the car part ID to the zamowione_czesci array
-        });
-    
-        alert("Order placed successfully!");
-      } catch (error) {
-        console.error("Error placing order:", error);
-        alert("Failed to place order. Please try again.");
-      }
-    };
-
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
@@ -79,6 +43,10 @@ export default function CarServiceDetails() {
   if (!carService) {
     return <div className="flex justify-center items-center h-screen">Car service not found</div>;
   }
+
+  const handleNavigateToPayment = () => {
+    router.push(`/payment/appointments?id=${id}`); // Navigate to the PaymentPage with the id as a query parameter
+  };
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen px-4 bg-gray-100 relative">
@@ -102,10 +70,10 @@ export default function CarServiceDetails() {
       </div>
       {/* Order Button */}
       <button
-        onClick={handleOrder} // Call the handleOrder function
+        onClick={handleNavigateToPayment}
         className="bg-blue-500 text-white w-full sm:w-3/5 lg:w-2/5 mt-4 py-3 rounded-lg shadow-md hover:bg-blue-600 transition-all"
       >
-        Order
+        Make an appointment
       </button>
       <BottomNavBar />
     </div>
