@@ -4,6 +4,7 @@ import React from 'react';
 import { useAuth } from './context/AuthContext';
 import StartingPage from "@/components/StartingPage";
 import BottomNavBar from "@/components/BottomNavBar";
+import GoogleMapRouteComponent from "@/components/GoogleMap";
 
 
 export default function Home() {
@@ -36,16 +37,10 @@ export default function Home() {
       <div className="relative mt-16 w-full max-w-4xl text-center">
         <h2 className="text-2xl font-bold mb-4">Here you can find us</h2>
         <div className="w-full h-64 rounded-lg shadow-lg">
-          <iframe
-              src="https://www.openstreetmap.org/export/embed.html?bbox=19.975434%2C50.210916%2C19.981434%2C50.214916&layer=mapnik&marker=50.212916%2C19.978434"
-              className="w-full h-full border-0"
-              allowFullScreen=""
-              loading="lazy"
-              title="Car Service Location"
-          ></iframe>
+          <GoogleMapRouteComponent/>
         </div>
       </div>
-      <div className="relative mt-8 w-full max-w-4xl text-center">
+      <div className="relative mt-32 w-full max-w-4xl text-center">
         <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
           <p className="text-lg mb-4">Need assistance? Call us now!</p>
           <a
