@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,3 +21,15 @@ if (typeof window !== "undefined") {
 export const db = typeof window !== "undefined" ? getFirestore(app) : null;
 
 export const auth = typeof window !== "undefined" ? getAuth(app) : null;
+
+export async function fetchGoogleMapsApiKey() {
+  const docRef = doc(db, "config", "apiKeys");
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data().googleMapsApiKey;
+  } else {
+    console.error("No such document in Firestore!");
+    return null;
+  }
+}
