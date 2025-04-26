@@ -11,6 +11,7 @@ const PaymentPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams(); // Get query parameters
   const [id, setId] = useState(null); // State to store the id
+  const [isClient, setIsClient] = useState(false); // State to check if rendering on the client
   const [paymentMethod, setPaymentMethod] = useState("");
   const [creditCardNumber, setCreditCardNumber] = useState("");
   const [creditCardExpiry, setCreditCardExpiry] = useState("");
@@ -20,6 +21,7 @@ const PaymentPage = () => {
 
   useEffect(() => {
     // Ensure this runs only on the client side
+    setIsClient(true);
     const queryId = searchParams.get("id");
     setId(queryId);
   }, [searchParams]);
@@ -61,8 +63,8 @@ const PaymentPage = () => {
     }
   };
 
-  if (!id) {
-    // Render nothing or a loading state until the id is available
+  if (!isClient || !id) {
+    // Render nothing or a loading state until the id is available and client-side rendering is ready
     return <div>Loading...</div>;
   }
 
