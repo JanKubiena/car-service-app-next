@@ -9,9 +9,8 @@ import BottomNavBar from "@/components/BottomNavBar";
 
 const PaymentPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams(); // Get query parameters
-  const [id, setId] = useState(null); // State to store the id
-  const [isClient, setIsClient] = useState(false); // State to check if rendering on the client
+  const searchParams = useSearchParams();
+  const [id, setId] = useState(null); // State to store the query parameter
   const [paymentMethod, setPaymentMethod] = useState("");
   const [creditCardNumber, setCreditCardNumber] = useState("");
   const [creditCardExpiry, setCreditCardExpiry] = useState("");
@@ -20,10 +19,10 @@ const PaymentPage = () => {
   const [appointmentTime, setAppointmentTime] = useState("");
 
   useEffect(() => {
-    // Ensure this runs only on the client side
-    setIsClient(true);
-    const queryId = searchParams.get("id");
-    setId(queryId);
+    // Ensure this runs only in the browser
+    if (searchParams) {
+      setId(searchParams.get("id"));
+    }
   }, [searchParams]);
 
   const handleOrder = async () => {
@@ -35,8 +34,12 @@ const PaymentPage = () => {
       return;
     }
 
+    if (!appointmentDate || !appointmentTime) {
+      alert("Please select both an appointment date and time.");
+      return;
+    }
+
     try {
-      // Query the uzytkownicy collection to find the document with the matching uid field
       const usersRef = collection(db, "uzytkownicy");
       const q = query(usersRef, where("uid", "==", user.uid));
       const querySnapshot = await getDocs(q);
@@ -46,25 +49,27 @@ const PaymentPage = () => {
         return;
       }
 
-      // Assuming there is only one document with the matching uid
       const userDoc = querySnapshot.docs[0];
       const userRef = doc(db, "uzytkownicy", userDoc.id);
 
-      // Update the wizyty array in the user's document
       await updateDoc(userRef, {
-        wizyty: arrayUnion(id), // Add the appointment ID to the wizyty array
+        wizyty: arrayUnion({
+          id,
+          appointmentDate,
+          appointmentTime,
+        }),
       });
 
       alert("Appointment set successfully! Appointment details have been sent to your email address.");
-      router.push("/history"); // Redirect to the history page after placing the order
+      router.push("/history");
     } catch (error) {
       console.error("Error setting appointment:", error);
       alert("Failed to set appointment. Please try again.");
     }
   };
 
-  if (!isClient || !id) {
-    // Render nothing or a loading state until the id is available and client-side rendering is ready
+  if (!id) {
+    // Render a fallback UI if the id is not available
     return <div>Loading...</div>;
   }
 
@@ -202,7 +207,7 @@ const PaymentPage = () => {
           Pay
         </button>
       </form>
-      <BottomNavBar /> {/* Include the BottomNavBar component */}
+      <BottomNavBar />
     </div>
   );
 };
